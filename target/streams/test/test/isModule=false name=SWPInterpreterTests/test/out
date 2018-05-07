@@ -1,0 +1,28 @@
+[0m[[0m[0minfo[0m] [0m[0m[32mSWPInterpreterTests:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31mSWPInterpreterTests *** ABORTED ***[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  java.lang.ExceptionInInitializerError:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at SWPInterpreter$.checkProgramGrammar(SWPInterpreter.scala:36)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at SWPInterpreterTests.expectValidGrammar(SWPInterpreterTests.scala:10)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at SWPInterpreterTests.$anonfun$new$1(SWPInterpreterTests.scala:32)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:12)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at org.scalatest.OutcomeOf.outcomeOf$(OutcomeOf.scala:83)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at org.scalatest.OutcomeOf$.outcomeOf(OutcomeOf.scala:104)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at org.scalatest.Transformer.apply(Transformer.scala:22)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at org.scalatest.Transformer.apply(Transformer.scala:20)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at org.scalatest.FunSuiteLike$$anon$1.apply(FunSuiteLike.scala:186)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  ...[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  Cause: java.util.regex.PatternSyntaxException: Dangling meta character '?' near index 19[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m/(a-z)(A-Z|a-z|0-9|?|_)*/[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m                   ^[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.error(Pattern.java:1957)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.sequence(Pattern.java:2125)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.expr(Pattern.java:1998)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.group0(Pattern.java:2907)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.sequence(Pattern.java:2053)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.expr(Pattern.java:1998)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.compile(Pattern.java:1698)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.<init>(Pattern.java:1351)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at java.util.regex.Pattern.compile(Pattern.java:1028)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  at scala.util.matching.Regex.<init>(Regex.scala:223)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  ...[0m[0m

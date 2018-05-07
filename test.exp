@@ -1,0 +1,23 @@
+fun fib(i) = if lt?(i, 2) then 1 else add(fib(sub(i, 1)), fib(sub(i, 2)));
+
+fun buildList(i, list) = {
+  if eq?(i, 0) then
+    list
+  else {
+    $num = fib(i);
+    {
+      $i = 1;
+    };
+    list = build(num, list);
+    buildList(sub(i, 1), list);
+  };
+};
+
+fun getData(i) = {
+  $obj = object {
+    $l = buildList(i, []);
+    $i = i;
+  };
+};
+
+getData(10).l

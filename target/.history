@@ -1,0 +1,7 @@
+compile
+run test.exp
+test
+compile
+test
+compile
+test
