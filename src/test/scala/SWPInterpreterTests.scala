@@ -34,6 +34,62 @@ class SWPInterpreterTests extends FunSuite {
     """)
   }
 
+  // custom test case for variable assignment with number
+  test("Variable assignment") {
+    expectValidGrammar("""
+      a = 1;
+    """)
+  }
+
+  // custom test case for variable assignment with boolean
+  test("Variable assignment with boolean") {
+    expectValidGrammar("""
+      a = True;
+    """)
+  }
+
+  // custom test case for braces
+  test("Braces") {
+    expectValidGrammar("""
+      (True)
+    """)
+  }
+
+  // custom test case for if else then
+  test("if else then") {
+    expectValidGrammar("""
+      if True then True else False
+    """)
+  }
+
+  // custom test case for block
+  test("Block") {
+    expectValidGrammar("""
+      {True;a=False;}
+    """)
+  }
+
+  // custom test case for variable declaration
+  test("Variable Declaration") {
+    expectValidGrammar("""
+      $yolo = 1;
+    """)
+  }
+
+  // custom test case for list
+  test("List") {
+    expectValidGrammar("""
+      $yolo = [1,2,3];
+    """)
+  }
+
+  // custom test case for record def
+  test("Record Def") {
+    expectValidGrammar("""
+      {$a=1;$yolo=5}
+    """)
+  }
+
   test("Parser short program") {
     expectValidGrammar("""
       fun ascending(i, l) = {
