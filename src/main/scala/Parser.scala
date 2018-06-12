@@ -7,10 +7,10 @@ class ExpParser extends JavaTokenParsers {
   def program : Parser[Program] = prog
 
   // working
-  def variable : Parser[ID] = id
+  def variable : Parser[Var] = id ^^ { case (v) => Var(v)}
 
   // working
-  val id : Parser[ID] = "[a-z]([A-Z]|[a-z]|[0-9]|[?]|_)*".r ^^ {s => ID(s.toString)}
+  val id : Parser[String] = "[a-z]([A-Z]|[a-z]|[0-9]|[?]|_)*".r // ^^ {s => ID(s.toString)}
 
   // working
   val int : Parser[Number] = "[1-9][0-9]*|0|-[1-9][0-9]*".r ^^ {i => Number(i.toInt)}
@@ -52,7 +52,7 @@ class ExpParser extends JavaTokenParsers {
   def expr : Parser[Node] = call | block | var_dec | var_ass | cond | liste | record_def | int | bool | braces | record_access | variable
 
   // TODO should work
-  def call : Parser[Call] = id ~ "(" ~ repsep(expr, ",") <~ ")" ^^ {case(name ~_~ params) => Call(name, params)}
+  def call : Parser[Call] = id ~ "(" ~ repsep(expr, ",") <~ ")" ^^ {case(name ~_~ params) => Call(name.toString, params)}
 
   // TODO should work
   def function : Parser[FunctionDeclaration] = "fun" ~> id ~ "(" ~ repsep(id, ",") ~ ")" ~ "=" ~ expr ^^
