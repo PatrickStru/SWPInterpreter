@@ -27,7 +27,7 @@ class Interpreter(reader: () => String, writer: String => _) {
   // If you choose to implement strings and console I/O, you have to use the given reader and
   // writer to interact with the console, because we can test your solution much more easily
   // this way.
-  def interpret(program: Program): ExpValue = {
+  def interpret(program: Node): ExpValue = {
     // writer("Hello, " + reader() + "!")
     ???
   }

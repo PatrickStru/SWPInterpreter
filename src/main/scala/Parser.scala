@@ -3,12 +3,13 @@ import scala.util.parsing.combinator._
 class ExpParser extends JavaTokenParsers {
 
   // TODO Implement the expression parser and add additional parsers for terminal and non terminal symbols, where necessary.
-  def program: Parser[Program] = prog
+  //def program: Parser[Program] = prog
 
-  //def program: Parser[Node] = record_def //var_ass | int | braces | cond_expr | block | var_dec | liste
+  def program: Parser[Node] = function | block | cond | call | function | record_def |var_ass | int | braces | block | var_dec | liste | record_dec
+  //def program: Parser[Program] = prog
 
   // working
-  private val variable = id
+  private def my_var = id
 
   // working
   private val id : Parser[ID] = "[a-z]([A-Z]|[a-z]|[0-9]|[?]|_)*".r ^^ {s => ID(s.toString)}
@@ -20,55 +21,61 @@ class ExpParser extends JavaTokenParsers {
   private val bool : Parser[Bool] = ("True"|"False") ^^ {bool => Bool(bool.toBoolean)}
 
   // working
-  private val cond : Parser[Cond] = ("if" ~ expr ~ "then" ~ expr ~ "else" ~ expr) ^^ {case (_~ l ~_~ m ~_~ r) => Cond(l, m, r)}
+  private def cond : Parser[Cond] = ("if" ~ expr ~ "then" ~ expr ~ "else" ~ expr) ^^ {case (_~ l ~_~ m ~_~ r) => Cond(l, m, r)}
 
   // working
-  private val braces : Parser[Braces] = "(" ~> expr <~ ")" ^^ {case (param) => Braces(param)}
+  private def braces : Parser[Braces] = "(" ~> expr <~ ")" ^^ {case (param) => Braces(param)}
 
   // working
-  private val var_ass : Parser[varAssign] = (id ~ "=" ~ expr <~ ";") ^^ {case (l ~_~ r) => varAssign(l, r)}
+  private def var_ass : Parser[varAssign] = (id ~ "=" ~ expr <~ ";") ^^ {case (l ~_~ r) => varAssign(l, r)}
 
   // working
-  private val block : Parser[Block] = "{" ~> repsep(expr, ";") <~ "}" ^^ {case (r) => Block(r)}
+  private def block : Parser[Block] = "{" ~> rep(expr) <~ opt(";") <~ "}" <~ ";" ^^ {case (l) => Block(l)}
+    //case None => Block()
+    //case Some(expression) => varDec1(expression)}
+
+   // case (r) => Block(r)}
 
   // working
-  private val var_dec : Parser[varDec1] = "$" ~> id ~ "=" ~ expr <~ ";" ^^ {case(l ~_~ r) => varDec1(l, r)}
+  private def var_dec : Parser[varDec1] = "$" ~> id ~ "=" ~ expr <~ ";" ^^ {case(l ~_~ r) => varDec1(l, r)}
 
   // TODO should work
-  private val record_dec : Parser[recordValueDec1] = "$" ~> id ~ "=" ~ expr ^^ {case(l ~_~ r) => recordValueDec1(l, r)}
+  private def record_dec : Parser[recordValueDec1] = "$" ~> id ~ "=" ~ expr ^^ {case(l ~_~ r) => recordValueDec1(l, r)}
 
   // TODO
-  private val record_def : Parser[recordDef] = "{" ~> repsep(record_dec, ";") <~ "}" ^^ {case(l) => recordDef(l)}
+  private def record_def : Parser[recordDef] = "object" ~ "{" ~> rep1sep(record_dec, ";") <~ "}" ^^ {case(l) => recordDef(l)}
 
   // TODO should work
-  private val liste : Parser[list] = "[" ~> repsep(expr, ",") <~ "]" ^^ {case(l) => list(l)}
+  private def liste : Parser[list] = "[" ~> repsep(expr, ", ") <~ "]" ^^ {case(l) => list(l)}
 
   // TODO
-  private val recordRef = block | record_def | braces | variable | call
+  private def recordRef : Parser[Node] = block | record_def | braces | my_var | call
 
   // TODO should work
-  private val record_access : Parser[recordAccess] = recordRef ~ "." ~ id ^^ {case(l ~_~ r) => recordAccess(l, r)}
-
-  // TODO not sure
-  private val call : Parser[Call] = id ~ "(" ~ repsep(expr, ",") <~ ")" ^^ {case(name ~_~ params) => Call(name, params)}
-
-  // TODO not sure
-  private val function : Parser[FunctionDeclaration] = "fun" ~ id ~ "(" ~ repsep(id, ",") ~ ")" ~ "=" ~ expr ^^ {case (_~ name ~_~ params ~_~_~ body) => FunctionDeclaration(name, params, body)}
-
-  // TODO not sure
-  private val prog : Parser[Program] = repsep(function, ";") ~ "" ~ expr ^^ {case(f ~_~ e) => Program(f, e)}
+  private def record_access : Parser[recordAccess] = recordRef ~ "." ~ id ^^ {case(l ~_~ r) => recordAccess(l, r)}
 
   // TODO
-  private val expr = block | record_def | record_access | var_dec | var_ass | cond | liste | variable | int | bool | braces | call
+  private def expr : Parser[Node] = block | var_dec | var_ass | cond | liste | my_var | int | bool | braces | call | record_def | record_access
+
+  // TODO not working
+  private def call : Parser[Call] = id ~ "(" ~ rep(expr <~ opt(", ")) ~ ")" ^^ {case(name ~_~ params ~_) => Call(name, params)}
+  //private val callit : Parser[Call] = "(" ~> repsep(expr, ",") <~ ")" ^^ {case(params) => Call(params)}
+
+  // TODO not working
+  private def function : Parser[FunctionDeclaration] = "fun" ~ id ~ "(" ~ rep(id <~ opt(", ")) ~ ")" ~ "=" ~ expr ^^
+    {case (_~ name ~_~ params ~_~_~ body) => FunctionDeclaration(name, params, body)}
+
+  // TODO not working
+  private def prog : Parser[Program] = rep(function <~ ";") ~ expr ^^ {case(f ~ e) => Program(f, e)}
 
 }
 
 object ParseProgram extends ExpParser {
-//  def parse(s: String): ParseResult[Node] = {
-//    parseAll(program, s)
-//  }
-
-  def parse(s: String): ParseResult[Program] = {
+  def parse(s: String): ParseResult[Node] = {
     parseAll(program, s)
   }
+
+//  def parse(s: String): ParseResult[Program] = {
+//    parseAll(program, s)
+//  }
 }
