@@ -1,0 +1,9 @@
+fun getResult(list) = {
+    $var = first(list);
+    if eq?(var, 0) then {
+            $var = build(1, list);
+            list = if eq?([], rest(list)) then [1, 2, 3] else var;
+        }
+        else
+            var = list = [];
+};

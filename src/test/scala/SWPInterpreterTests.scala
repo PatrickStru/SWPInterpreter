@@ -84,16 +84,16 @@ class SWPInterpreterTests extends FunSuite {
   }
 
   // custom test case for record dec
-  test("Record Dec") {
+  test("Record with 1 Dec") {
     expectValidGrammar("""
-      $a=1
+      object{$a=1;}
     """)
   }
 
   // custom test case for record def
-  test("Record Def") {
+  test("Record with 2 Dec") {
     expectValidGrammar("""
-      object{$a=1;$yolo=5}
+      object{$a=1;$yolo=5;}
     """)
   }
 
@@ -101,22 +101,6 @@ class SWPInterpreterTests extends FunSuite {
   test("Function call") {
     expectValidGrammar("""
       foo?(param1, param2)
-    """)
-  }
-
-  // custom test case for function declaration
-//  test("Function Declaration") {
-//    expectValidGrammar("""
-//      fun foo2?(param1, param2) = lol
-//    """)
-//  }
-
-  // custom test case for function declaration and call
-  test("Function declaration and call") {
-    expectValidGrammar("""
-      fun test() = {
-
-      };
     """)
   }
 
@@ -132,6 +116,13 @@ class SWPInterpreterTests extends FunSuite {
       };
       ascending(5, [])
     """)
+  }
+
+  test("Parser record access") {
+    expectInvalidGrammar(
+      """
+        getData(10).l
+      """)
   }
 
   test("Parser defect program") {

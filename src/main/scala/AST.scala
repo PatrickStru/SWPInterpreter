@@ -26,7 +26,7 @@ case class list(exp: List[Node]) extends Node
 
 case class recordAccess(l: Node, r: Node) extends Node
 
-case class Call(name: ID, params: List[Node]) extends Node
+case class Call(name: Node, params: List[Node]) extends Node
 
-case class Variable(name: ID) extends Node
+//case class Variable(name: Node) extends Node
 //case class Call(params: List[Node]) extends Node
