@@ -45,9 +45,10 @@ class Interpreter(reader: () => String, writer: String => _) {
   }
 
   def helper(node: Node): ExpValue = node match{
-
+    case ID(i) => ExpString(i)
     case Number(i) => ExpInteger(i)
     case Bool(i) => ExpBoolean(i)
+    case list(i) => ExpList(helpbuildlist(node,i))
     case Call(name, params) => builtinFunctions(name)(helpbuildlist(node,params))
     case Cond(x, y, z) => helper(x) match{
       case ExpBoolean(true) => helper(y)
