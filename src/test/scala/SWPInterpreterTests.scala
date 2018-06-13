@@ -225,6 +225,17 @@ class SWPInterpreterTests extends FunSuite {
     ExpList(List(ExpInteger(10), ExpInteger(4))))
   }
 
+  test("Var Dec 1") {
+    expectResult("""
+                {
+      $a = 1;
+      $b = 2;
+      add(a,b);
+      }
+
+    """,
+      ExpInteger(3))
+  }
   test("Interpreter variables") {
     expectResult("""
       {
@@ -246,6 +257,14 @@ class SWPInterpreterTests extends FunSuite {
       addValues(object { $left = 1; $right = object { $left = 2; $right = 3; }; })
     """,
     ExpInteger(6))
+  }
+
+  test("Parser comments") {
+    expectValidGrammar("""
+      add(#)
+      1, 2)##
+      # 0
+    """)
   }
 
 /*
@@ -274,13 +293,6 @@ class SWPInterpreterTests extends FunSuite {
     "")
   }
 
-  test("Parser comments") {
-    expectValidGrammar("""
-      add(#)
-      1, 2)##
-      # 0
-    """)
-  }
 
   test("Parser comments invalid") {
     expectInvalidGrammar("""

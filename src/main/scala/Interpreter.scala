@@ -46,6 +46,7 @@ class Interpreter(reader: () => String, writer: String => _) {
   // this way.
   def interpret(program: Program): ExpValue = {
     // writer("Hello, " + reader() + "!")
+    mystack.push(mymap)
     helper(program.main, program)
   }
 
@@ -77,11 +78,33 @@ class Interpreter(reader: () => String, writer: String => _) {
                                   else{???}
 
                                   }
-
+    case varDec1(name, params) => val returnhelper = helper(params, program)
+                                  mystack.head(name) = returnhelper
+                                  returnhelper
     case Cond(x, y, z) => helper(x,program) match{
       case ExpBoolean(true) => helper(y, program)
       case ExpBoolean(false) => helper(z, program)
     }
+
+    case Block(params) => if(params.isEmpty)
+                          {
+                            helper(Number(0),program)
+                          }
+                          else{
+                            var tempmap = new mutable.HashMap[String, ExpValue]()
+                            for(x <- mystack.head)
+                            {
+                              tempmap(x._1) = x._2
+                            }
+                            mystack.push(tempmap)
+                            var temp : ExpValue = null
+                            for(i <- params)
+                            {
+                              temp = helper(i,program)
+                            }
+                            mystack.pop()
+                            temp
+                          }
   }
 
   def helpbuildlist(node: Node, list: List[Node], program: Program): List[ExpValue] = list match{
