@@ -10,6 +10,7 @@ class Interpreter(reader: () => String, writer: String => _) {
 
   var mymap = new mutable.HashMap[String,ExpValue]()
   var mystack = new mutable.Stack[mutable.HashMap[String,ExpValue]]()
+  var mysecondstack = new mutable.Stack[mutable.HashMap[String,ExpValue]]()
 
   // It is not required to use our datastructure to implement built in functions,
   // you are also allowed to implement it in your own way.
@@ -80,6 +81,7 @@ class Interpreter(reader: () => String, writer: String => _) {
                                   }
     case varDec1(name, params) => val returnhelper = helper(params, program)
                                   mystack.head(name) = returnhelper
+                                  mysecondstack.head.put(name, returnhelper)
                                   returnhelper
     case Cond(x, y, z) => helper(x,program) match{
       case ExpBoolean(true) => helper(y, program)
@@ -92,19 +94,36 @@ class Interpreter(reader: () => String, writer: String => _) {
                           }
                           else{
                             var tempmap = new mutable.HashMap[String, ExpValue]()
+                            var templist = new mutable.HashMap[String, ExpValue]()
                             for(x <- mystack.head)
                             {
                               tempmap(x._1) = x._2
                             }
                             mystack.push(tempmap)
+                            mysecondstack.push(templist)
                             var temp : ExpValue = null
                             for(i <- params)
                             {
                               temp = helper(i,program)
                             }
                             mystack.pop()
+                            mysecondstack.pop()
                             temp
                           }
+    case varAssign(name, nodel) => var tmp = helper(nodel, program)
+                                    var counter = 0
+                                    for(x <- mysecondstack)
+                                    {
+                                      for(i <- x)
+                                        {
+                                          if(i == name)
+                                          {
+                                            
+                                          }
+                                        }
+                                      counter = counter + 1
+                                    }
+                                    tmp
   }
 
   def helpbuildlist(node: Node, list: List[Node], program: Program): List[ExpValue] = list match{
