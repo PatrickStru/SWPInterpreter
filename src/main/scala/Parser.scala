@@ -41,7 +41,7 @@ class ExpParser extends JavaTokenParsers {
 
   def expr : Parser[Node] = block | record_access | call | var_ass | record_def | var_dec | cond | liste | int | bool | braces | variable
 
-  def function : Parser[FunctionDeclaration] = "fun" ~> id ~ "(" ~ repsep(variable, ",") ~ ")" ~ "=" ~ expr ^^
+  def function : Parser[FunctionDeclaration] = "fun" ~> id ~ "(" ~ repsep(id, ",") ~ ")" ~ "=" ~ expr ^^
     {case (name ~_~ params ~_~_~ body) => FunctionDeclaration(name, params, body)}
 
   def prog : Parser[Program] = rep(function <~ ";") ~ expr ^^ {case(f ~ e) => Program(f, e)}
