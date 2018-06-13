@@ -9,6 +9,7 @@ class Interpreter(reader: () => String, writer: String => _) {
   type VariableName = String
 
   var mymap = new mutable.HashMap[String,ExpValue]()
+  var mystack = new mutable.Stack[mutable.HashMap[String,ExpValue]]()
 
   // It is not required to use our datastructure to implement built in functions,
   // you are also allowed to implement it in your own way.
@@ -53,21 +54,27 @@ class Interpreter(reader: () => String, writer: String => _) {
     case Number(i) => ExpInteger(i)
     case Bool(i) => ExpBoolean(i)
     case list(i) => ExpList(helpbuildlist(node,i,program))
-    case Var(name) => mymap(name)
+    case Var(name) => mystack.head(name)
     case Call(name, params) => if(builtinFunctions.contains(name))
                                 {
                                     builtinFunctions(name)(helpbuildlist(node,params,program))
                                 }
                                else
                                 {
+                                  if(!program.functions.filter(i => i.name == name).isEmpty) {
+                                    var tempmap = new mutable.HashMap[String, ExpValue]()
                                     val temp = helpbuildlist(node, params, program)
                                     var counter = 0
                                     for (x <- program.functions.filter(i => i.name == name).head.params) {
-                                      mymap(x) = temp(counter)
+                                      tempmap(x) = temp(counter)
                                       counter = counter + 1
                                     }
-
-                                    helper(program.functions.filter(i => i.name == name).head.body, program)
+                                    mystack.push(tempmap)
+                                    val returnhelper = helper(program.functions.filter(i => i.name == name).head.body, program)
+                                    mystack.pop()
+                                    returnhelper
+                                  }
+                                  else{???}
 
                                   }
 
