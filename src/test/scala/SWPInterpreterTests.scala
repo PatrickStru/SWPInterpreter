@@ -37,14 +37,14 @@ class SWPInterpreterTests extends FunSuite {
   // custom test case for variable assignment with number
   test("Variable assignment") {
     expectValidGrammar("""
-      a = 1;
+      {a = 1;}
     """)
   }
 
   // custom test case for variable assignment with boolean
   test("Variable assignment with boolean") {
     expectValidGrammar("""
-      a = True;
+      {a = True;}
     """)
   }
 
@@ -72,14 +72,14 @@ class SWPInterpreterTests extends FunSuite {
   // custom test case for variable declaration
   test("Variable Declaration") {
     expectValidGrammar("""
-      $yolo = 1;
+      {$yolo = 1;}
     """)
   }
 
   // custom test case for list
   test("List") {
     expectValidGrammar("""
-      $yolo = [1, 2, 3];
+      {$yolo = [1, 2, 3];}
     """)
   }
 
@@ -118,11 +118,80 @@ class SWPInterpreterTests extends FunSuite {
     """)
   }
 
-  test("Parser record access") {
-    expectInvalidGrammar(
-      """
-        getData(10).l
+  test("Parser long program") {
+    expectValidGrammar("""
+      fun fib(i) = if lt?(i, 2) then 1 else add(fib(sub(i, 1)), fib(sub(i, 2)));
+
+     fun buildList(i, list) = {
+       if eq?(i, 0) then
+         list
+       else {
+         $num = fib(i);
+         {
+           $i = 1;
+         };
+         list = build(num, list);
+         buildList(sub(i, 1), list);
+       };
+     };
+
+     fun getData(i) = {
+       $obj = object {
+         $l = buildList(i, []);
+         $i = i;
+       };
+     };
+     getData(10).l
+    """)
+  }
+
+  test("Parser record access in all ways") {
+    expectValidGrammar("""
+       fun create(x, y) = object {
+         $x = x;
+         $y = y;
+       };
+
+       fun useless(x) = x;
+
+       fun addVectors(a, b) = create(add(useless(a).x, b.x), add(a.y, b.y));
+
+       fun foo(x) = (if eq?(x, 0) then create(1, 1) else create(2, x)).y;
+
+       fun bar(x) = {
+         $result = 0;
+         if (eq?(x, 0)) then {
+           result = create(1, 1);
+         } else
+           result = create(2, x);
+         result;
+       }.y;
+
+       add(foo(0), bar(3))
       """)
+  }
+
+  test("Parser test2.exp") {
+    expectValidGrammar("""
+      fun getResult(list) = {
+       $var = first(list);
+       if eq?(var, 0) then {
+               $var = build(1, list);
+               list = if eq?([], rest(list)) then [1, 2, 3] else var;
+           }
+           else
+               var = list = [];
+      };
+      getResult([0, 2, 4])
+    """)
+  }
+
+  test("Wrong test") {
+    expectInvalidGrammar("""
+      fun test() = {
+        $assp = 2
+      };
+    """)
   }
 
   test("Parser defect program") {
