@@ -112,16 +112,20 @@ class Interpreter(reader: () => String, writer: String => _) {
                           }
     case varAssign(name, nodel) => var tmp = helper(nodel, program)
                                     var counter = 0
+                                    var mycond = true
                                     for(x <- mysecondstack)
                                     {
-                                      for(i <- x)
-                                        {
-                                          if(i == name)
-                                          {
-                                            
-                                          }
+                                      if(mycond) {
+                                        if (!x.contains(name)) {
+                                          mystack(counter)(name) = tmp
                                         }
-                                      counter = counter + 1
+                                        else {
+                                          mystack(counter)(name) = tmp
+                                          mycond = false
+                                        }
+
+                                        counter = counter + 1
+                                      }
                                     }
                                     tmp
   }
