@@ -1,10 +1,14 @@
 import com.sun.tracing.dtrace.FunctionName
 
+import scala.collection.mutable
+
 class Interpreter(reader: () => String, writer: String => _) {
 
   // Type aliases to make the signatures more readable
   type FunctionName = String
   type VariableName = String
+
+  var mymap = new mutable.HashMap[String,ExpValue]()
 
   // It is not required to use our datastructure to implement built in functions,
   // you are also allowed to implement it in your own way.
@@ -41,24 +45,40 @@ class Interpreter(reader: () => String, writer: String => _) {
   // this way.
   def interpret(program: Program): ExpValue = {
     // writer("Hello, " + reader() + "!")
-    helper(program.main)
+    helper(program.main, program)
   }
 
-  def helper(node: Node): ExpValue = node match{
+  def helper(node: Node, program: Program): ExpValue = node match{
     case ID(i) => ExpString(i)
     case Number(i) => ExpInteger(i)
     case Bool(i) => ExpBoolean(i)
-    case list(i) => ExpList(helpbuildlist(node,i))
-    case Call(name, params) => builtinFunctions(name)(helpbuildlist(node,params))
-    case Cond(x, y, z) => helper(x) match{
-      case ExpBoolean(true) => helper(y)
-      case ExpBoolean(false) => helper(z)
-    }
+    case list(i) => ExpList(helpbuildlist(node,i,program))
+    case Var(name) => mymap(name)
+    case Call(name, params) => if(builtinFunctions.contains(name))
+                                {
+                                    builtinFunctions(name)(helpbuildlist(node,params,program))
+                                }
+                               else
+                                {
+                                    val temp = helpbuildlist(node, params, program)
+                                    var counter = 0
+                                    for (x <- program.functions.filter(i => i.name == name).head.params) {
+                                      mymap(x) = temp(counter)
+                                      counter = counter + 1
+                                    }
 
+                                    helper(program.functions.filter(i => i.name == name).head.body, program)
+
+                                  }
+
+    case Cond(x, y, z) => helper(x,program) match{
+      case ExpBoolean(true) => helper(y, program)
+      case ExpBoolean(false) => helper(z, program)
+    }
   }
 
-  def helpbuildlist(node: Node, list: List[Node]): List[ExpValue] = list match{
+  def helpbuildlist(node: Node, list: List[Node], program: Program): List[ExpValue] = list match{
     case Nil => Nil
-    case i::is => helper(list.head)::helpbuildlist(node, list.tail)
+    case i::is => helper(list.head, program)::helpbuildlist(node, list.tail,program)
   }
 }

@@ -140,6 +140,13 @@ class SWPInterpreterTests extends FunSuite {
     ExpInteger(2))
   }
 
+  test("Interpreter program with user defined functions EASY") {
+    expectResult("""
+      fun toList(a) = [a];
+      toList(4)
+    """,
+      ExpList(List(ExpInteger(4))))
+  }
   test("Interpreter program with user defined functions") {
     expectResult("""
       fun sum(a) = if lt?(a, 1) then 0 else add(sum(add(a, -1)), a);
